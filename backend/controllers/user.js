@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt'); //package de chiffrement bcrypt
 const jwt = require('jsonwebtoken'); //package pour créer et vérifier les tokens d'authentification
 const User = require('../models/User'); //schéma de User
 const cryptojs = require('crypto-js'); //package de cryptage (utilisé pour l'email)
-require('dotenv').config({path: '../.env'});
+require('dotenv').config();
 
 ///// exports des fonctions /////
 
@@ -19,9 +19,9 @@ exports.signup = (req, res, next) => {
       });
       user.save() //sauvegarde dans MongoDB
         .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-        .catch(error => console.log(error));
+        .catch(error => res.status(400).json({message: error}));
     })
-    .catch(error => console.log(error));
+    .catch(error => res.status(500).json({message: error}));
 };
 
 

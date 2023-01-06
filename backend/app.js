@@ -1,7 +1,7 @@
 ////////// contient de l'application //////////
 
 //importations
-require('dotenv').config({path: 'C:\Users\ndohvich\Documents\mes programmations\p6 OPN\backend\.env'}); //charge les variables d'environnement
+require('dotenv').config(); //charge les variables d'environnement
 const express = require('express'); //framework node.js
 const mongoose = require('mongoose'); //facilite interactions avec DB MongoDB
 const path = require('path'); //donne accès au chemin de notre système de fichier
@@ -10,25 +10,18 @@ const helmet = require('helmet'); //définit divers en-têtes HTTP sécurisées
 const mongoSanitize = require('express-mongo-sanitize'); //protège des attaques par injection NoSQL(MongoDB)
 const cors = require('cors'); //permet de protéger les en-têtes
 
-//100 requêtes toutes les 15min par IP
-const apiLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100
-});
 
 //création de notre application express
 const app = express();
 
-//permet de protéger les en-têtes 
-const corsOptions = {
-  origin: process.env.CLIENT_URL,
-  credentials: true,
-  'allowedHeaders': ['sessionId', 'Content-Type'],
-  'exposedHeaders': ['sessionId'],
-  'methods': 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  'preflightContinue': false
-}
-app.use(cors(corsOptions));
+app.use(helmet());
+
+//connexion à bdd MongoDB via mongoose
+mongoose.connect(`mongodb+srv://ndohvich:171191Yannickndohjules@cluster0.zxie4.mongodb.net/test`,
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
 
 //cors
 app.use((req, res, next) => {
@@ -38,19 +31,8 @@ app.use((req, res, next) => {
   next();
 });
 
-
-//limiteur de requêtes s'applique seulement aux requêtes commençant par API (=ne concerne pas les express.static)
-app.use('/api', apiLimiter); 
-
-app.use(helmet());
-
-//connexion à bdd MongoDB via mongoose
-mongoose.connect(`mongodb+srv://ndoh:171191Yannickndohjules@cluster0.gb05j.mongodb.net/?retryWrites=true&w=majority`,
-  { useNewUrlParser: true,
-    useUnifiedTopology: true 
-  })
-  .then(() => console.log('Connexion à MongoDB réussie !'))
-  .catch(() => console.log('Connexion à MongoDB échouée !'));
+//permet de protéger les en-têtes 
+app.use(cors());
 
 //rend le corps des requêtes json (de tt types) => en objet JS utilisable -- anciennement body-parser
 app.use(express.json());
