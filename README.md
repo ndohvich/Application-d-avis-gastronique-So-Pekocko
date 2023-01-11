@@ -2,10 +2,6 @@
 # So Pekocko
 
 Une application d'avis gastronomique.
-
-
-![Logo](https://github.com/ndohvich/p6-OPN/blob/main/backend/assets/saucesScreenshots.jpg)
-
     
 ## Fonctionnalités
 
