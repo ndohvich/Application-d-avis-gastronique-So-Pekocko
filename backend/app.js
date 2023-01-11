@@ -14,7 +14,9 @@ const cors = require('cors'); //permet de protéger les en-têtes
 //création de notre application express
 const app = express();
 
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 
 //connexion à bdd MongoDB via mongoose
 mongoose.connect(`mongodb+srv://ndohvich:171191Yannickndohjules@cluster0.zxie4.mongodb.net/test`,
@@ -44,11 +46,11 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //importe les routes
 const userRoutes = require('./routes/user');
-//const sauceRoutes = require('./routes/sauce');
+const sauceRoutes = require('./routes/sauce');
 
 //enregistre les routeurs dans l'application
 app.use('/api/auth', userRoutes);
-//app.use('/api/sauces', sauceRoutes);
+app.use('/api/sauces', sauceRoutes);
 
 //exporte l'application
 module.exports = app;
